@@ -1,0 +1,26 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{template "title" .}} - Cazar</title>
+        <!-- <link rel='stylesheet' href='/static/css/main.css'> -->
+        <!-- <link rel='shortcut icon' href='/static/img/favicon.ico' type='image/x-icon'> -->
+    </head>
+    <body>
+        <header>
+            <h1><a href="/">Cazar</a></h1>
+        </header>
+        {{template "nav" .}}
+        <main>
+            {{with .Flash}}
+                <div class="flash">{{.}}</div>
+            {{end}}
+            {{template "main" .}}
+        </main>
+        <footer>
+           *
+        </footer>
+    </body>
+</html>
+{{end}}
