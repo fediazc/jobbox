@@ -1,0 +1,20 @@
+{{define "title"}}View Application{{end}}
+
+{{define "main"}}
+    {{with .Job}}
+        <div class="job">
+            <div class="job-header"> 
+                <h2 class="job-title">{{.Role}} at {{.Company}}</h2>
+                <div class="job-applied-date">
+                    Applied on <time>{{humanShortDate .DateApplied}}</time>
+                </div>
+            </div>
+            <div class="job-details">
+                <div class="job-info">{{.Commute}}</div>
+                <div class="job-info">{{.ApplicationStatus}}</div>
+                <div class="job-info">{{.Location}}</div>
+            </div>
+            <div class="job-notes">{{.Notes}}</div>
+        </div>
+    {{end}}
+{{end}}

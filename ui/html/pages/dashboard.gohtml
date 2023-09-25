@@ -1,0 +1,30 @@
+{{define "title"}}Dashboard{{end}}
+
+{{define "main"}}
+    <h2>Recent Applications</h2>
+    {{if .Jobs}}
+        <table>
+            <tr>
+                <th>Company</th>
+                <th>Role</th>
+                <th>Commute Type</th>
+                <th>Status</th>
+                <th>Location</th>
+                <th>Date Applied</th>
+            </tr>
+            {{range .Jobs}}
+            <tr>
+                <td>{{.Company}}</td>
+                <td>{{.Role}}</td>
+                <td>{{.Commute}}</td>
+                <td>{{.ApplicationStatus}}</td>
+                <td>{{.Location}}</td>
+                <td>{{humanDate .DateApplied}}</td>
+                <td><a href="/application/view/{{.ID}}">View</a></td>
+            </tr>
+            {{end}}
+        </table>
+    {{else}}
+        <p>You have no job applications to view. <a href="/apps/add">Add one!</a></p>
+    {{end}}
+{{end}}

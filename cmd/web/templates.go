@@ -4,7 +4,9 @@ import (
 	"html/template"
 	"io/fs"
 	"path/filepath"
+	"time"
 
+	"cazar.fediaz.net/internal/models"
 	"cazar.fediaz.net/ui"
 )
 
@@ -12,9 +14,33 @@ type templateData struct {
 	IsAuthenticated bool
 	Flash           string
 	Form            any
+	Job             *models.Job
+	Jobs            []*models.Job
 }
 
-var functions = template.FuncMap{}
+func todaysDate() string {
+	return time.Now().Format("2006-01-02")
+}
+
+func humanDate(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+	return t.Format("01/02/2006")
+}
+
+func humanShortDate(t time.Time) string {
+	if t.IsZero() {
+		return ""
+	}
+	return t.Format("01/02")
+}
+
+var functions = template.FuncMap{
+	"todaysDate":     todaysDate,
+	"humanDate":      humanDate,
+	"humanShortDate": humanShortDate,
+}
 
 func newTemplateCache() (map[string]*template.Template, error) {
 	cache := map[string]*template.Template{}

@@ -12,6 +12,10 @@ import (
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
 
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		app.notFound(w)
+	})
+
 	fileServer := http.FileServer(http.FS(ui.Files))
 	router.Handler(http.MethodGet, "/static/*filepath", fileServer)
 
@@ -26,6 +30,13 @@ func (app *application) routes() http.Handler {
 	protected := dynamic.Append(app.requireAuthentication)
 
 	router.Handler(http.MethodPost, "/user/logout", protected.ThenFunc(app.logout))
+	router.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboard))
+	router.Handler(http.MethodGet, "/application/add", protected.ThenFunc(app.addJob))
+	router.Handler(http.MethodPost, "/application/add", protected.ThenFunc(app.addJobPost))
+
+	validated := protected.Append(app.validateAccess)
+
+	router.Handler(http.MethodGet, "/application/view/:id", validated.ThenFunc(app.viewJob))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 

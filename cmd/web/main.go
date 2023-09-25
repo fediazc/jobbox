@@ -18,6 +18,7 @@ import (
 
 type application struct {
 	users          models.UserModelInterface
+	jobs           models.JobModelInterface
 	infoLog        *log.Logger
 	errorLog       *log.Logger
 	templateCache  map[string]*template.Template
@@ -51,6 +52,7 @@ func main() {
 
 	app := &application{
 		users:          &models.UserModel{DB: db},
+		jobs:           &models.JobModel{DB: db},
 		infoLog:        infoLog,
 		errorLog:       errorLog,
 		templateCache:  templateCache,

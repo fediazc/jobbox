@@ -2,8 +2,14 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+
+	"cazar.fediaz.net/internal/models"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func secureHeaders(next http.Handler) http.Handler {
@@ -69,6 +75,37 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		if exists {
 			ctx := context.WithValue(r.Context(), isAuthenticatedContextKey, true)
 			r = r.WithContext(ctx)
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (app *application) validateAccess(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		uid := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+
+		params := httprouter.ParamsFromContext(r.Context())
+
+		jid, err := strconv.Atoi(params.ByName("id"))
+		if err != nil || jid < 1 {
+			app.notFound(w)
+			return
+		}
+
+		valid, err := app.jobs.UserMatchesJob(uid, jid)
+		if err != nil {
+			if errors.Is(err, models.ErrNoRecord) {
+				app.notFound(w)
+			} else {
+				app.serverError(w, err)
+			}
+			return
+		}
+
+		if !valid {
+			app.notFound(w)
+			return
 		}
 
 		next.ServeHTTP(w, r)
