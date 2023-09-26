@@ -1,0 +1,73 @@
+{{define "jobform"}}
+<div>
+    <label>Company:</label>
+    {{with .Form.FieldErrors.company}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <input type="text" name="company" value="{{.Form.Company}}">
+</div>
+<div>
+    <label>Role:</label>
+    {{with .Form.FieldErrors.role}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <input type="text" name="role" value="{{.Form.Role}}">
+</div>
+<div>
+    <label>Commute Type:</label>
+    {{with .Form.FieldErrors.commute}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <select name="commute">
+        {{$selectedCommute := .Form.Commute}}
+        {{with .CommuteTypes}}
+            {{range .}}
+                <option value={{.}} {{if (eq . $selectedCommute)}}selected{{end}}>{{.}}</option>
+            {{end}}
+        {{end}}
+    </select>
+</div>
+<div>
+    <label>Status:</label>
+    {{with .Form.FieldErrors.status}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <select name="status">
+        {{$selectedStatus := .Form.ApplicationStatus}}
+        {{with .Statuses}}
+            {{range .}}
+                <option value={{.}} {{if (eq . $selectedStatus)}}selected{{end}}>{{.}}</option>
+            {{end}}
+        {{end}}
+    </select>
+</div>
+<div>
+    <label>Location:</label>
+    {{with .Form.FieldErrors.location}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <select name="location">
+        {{$selectedLocation := .Form.Location}}
+        {{with .Locations}}
+            {{range .}}
+                <option value="{{.}}" {{if (eq . $selectedLocation)}}selected{{end}}>{{.}}</option>
+            {{end}}
+        {{end}}
+    </select>
+</div>
+<div>
+    <label>Date Applied:</label>
+    {{with .Form.FieldErrors.dateApplied}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <input type="date" name="date-applied" value="{{todaysDate}}">
+</div>
+<div>
+    <label>Notes:</label>
+    {{with .Form.FieldErrors.notes}}
+        <label class="error">{{.}}</label>
+    {{end}}
+    <textarea name="notes">{{.Form.Notes}}</textarea>
+</div>
+<input type="submit" value="Submit">
+{{end}}

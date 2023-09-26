@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
+
+	"cazar.fediaz.net/internal/validator"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -27,6 +30,9 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 	return &templateData{
 		IsAuthenticated: app.isAuthenticated(r),
 		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		Locations:       getValidLocations(),
+		Statuses:        getValidStatuses(),
+		CommuteTypes:    getValidCommuteTypes(),
 	}
 }
 
@@ -58,4 +64,49 @@ func (app *application) isAuthenticated(r *http.Request) bool {
 	}
 
 	return isAuthenticated
+}
+
+func (app *application) parseJobForm(r *http.Request) (*jobForm, error) {
+	err := r.ParseForm()
+	if err != nil {
+		return nil, ErrUnprocessableForm
+	}
+
+	dateApplied, err := time.Parse("2006-01-02", r.PostForm.Get("date-applied"))
+	if err != nil {
+		return nil, ErrBadDate
+	}
+
+	form := &jobForm{
+		Company:           r.PostForm.Get("company"),
+		Role:              r.PostForm.Get("role"),
+		Commute:           r.PostForm.Get("commute"),
+		ApplicationStatus: r.PostForm.Get("status"),
+		Location:          r.PostForm.Get("location"),
+		DateApplied:       dateApplied,
+		Notes:             r.PostForm.Get("notes"),
+	}
+
+	form.CheckField(validator.NotBlank(form.Company), "company", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Company, 100), "company", "This field cannot be longer than 100 characters")
+	form.CheckField(validator.NotBlank(form.Role), "role", "This field cannot be blank")
+	form.CheckField(validator.MaxChars(form.Role, 100), "role", "This field cannot be longer than 100 characters")
+	form.CheckField(validator.PermittedValue(form.Commute, getValidCommuteTypes()...), "commute", "This field must be one of the values given here")
+	form.CheckField(validator.PermittedValue(form.ApplicationStatus, getValidStatuses()...), "status", "This field must be one of the values given here")
+	form.CheckField(validator.PermittedValue(form.Location, getValidLocations()...), "location", "This field must be one of the values given here")
+	form.CheckField(validator.MaxChars(form.Notes, 280), "notes", "This field cannot be longer than 280 characters")
+
+	return form, nil
+}
+
+func getValidLocations() []string {
+	return []string{"Unknown", "Alabama", "Alaska", "American Samoa", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Guam", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Minor Outlying Islands", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "U.S. Virgin Islands", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"}
+}
+
+func getValidCommuteTypes() []string {
+	return []string{"Unknown", "On-Site", "Remote", "Hybrid"}
+}
+
+func getValidStatuses() []string {
+	return []string{"Applied", "Heard Back", "Interviewing", "Offer Received", "Rejected"}
 }

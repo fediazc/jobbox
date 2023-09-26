@@ -50,11 +50,20 @@ func (m *JobModel) Insert(userID int, company, role, commute, applicationStatus,
 }
 
 func (m *JobModel) Delete(jobID int) error {
-	return nil
+	stmt := `DELETE FROM jobs WHERE id = ?`
+
+	_, err := m.DB.Exec(stmt, jobID)
+
+	return err
 }
 
 func (m *JobModel) Update(jobID int, company, role, commute, applicationStatus, location, notes string, dateApplied time.Time) error {
-	return nil
+	stmt := `UPDATE jobs SET company = ?, job_role = ?, commute = ?, application_status = ?, location = ?, notes = ?, date_applied = ?
+	WHERE id = ?`
+
+	_, err := m.DB.Exec(stmt, company, role, commute, applicationStatus, location, notes, dateApplied, jobID)
+
+	return err
 }
 
 func (m *JobModel) Get(jobID int) (*Job, error) {
@@ -71,6 +80,8 @@ func (m *JobModel) Get(jobID int) (*Job, error) {
 			return nil, err
 		}
 	}
+
+	j.ID = jobID
 
 	return j, nil
 }

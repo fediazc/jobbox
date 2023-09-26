@@ -21,6 +21,8 @@
                 <td>{{.Location}}</td>
                 <td>{{humanDate .DateApplied}}</td>
                 <td><a href="/application/view/{{.ID}}">View</a></td>
+                <td><a href="/application/update/{{.ID}}">Update</a></td>
+                <td><a href="/application/delete/{{.ID}}">Delete</a></td>
             </tr>
             {{end}}
         </table>

@@ -37,6 +37,10 @@ func (app *application) routes() http.Handler {
 	validated := protected.Append(app.validateAccess)
 
 	router.Handler(http.MethodGet, "/application/view/:id", validated.ThenFunc(app.viewJob))
+	router.Handler(http.MethodGet, "/application/update/:id", validated.ThenFunc(app.updateJob))
+	router.Handler(http.MethodPost, "/application/update/:id", validated.ThenFunc(app.updateJobPost))
+	router.Handler(http.MethodGet, "/application/delete/:id", validated.ThenFunc(app.deleteJob))
+	router.Handler(http.MethodPost, "/application/delete/:id", validated.ThenFunc(app.deleteJobPost))
 
 	standard := alice.New(app.recoverPanic, app.logRequest, secureHeaders)
 

@@ -16,6 +16,9 @@ type templateData struct {
 	Form            any
 	Job             *models.Job
 	Jobs            []*models.Job
+	Locations       []string
+	Statuses        []string
+	CommuteTypes    []string
 }
 
 func todaysDate() string {

@@ -216,39 +216,11 @@ func (app *application) addJob(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) addJobPost(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
+	form, err := app.parseJobForm(r)
 	if err != nil {
 		app.clientError(w, http.StatusUnprocessableEntity)
 		return
 	}
-
-	dateApplied, err := time.Parse("2006-01-02", r.PostForm.Get("date-applied"))
-	if err != nil {
-		app.clientError(w, http.StatusUnprocessableEntity)
-	}
-
-	form := &jobForm{
-		Company:           r.PostForm.Get("company"),
-		Role:              r.PostForm.Get("role"),
-		Commute:           r.PostForm.Get("commute"),
-		ApplicationStatus: r.PostForm.Get("status"),
-		Location:          r.PostForm.Get("location"),
-		DateApplied:       dateApplied,
-		Notes:             r.PostForm.Get("notes"),
-	}
-
-	permittedCommutes := []string{"Unknown", "On-Site", "Remote", "Hybrid"}
-	permittedStatuses := []string{"Applied", "Heard Back", "Interviewing", "Offer Received", "Rejected"}
-	permittedLocations := []string{"Unknown", "AK", "AL", "AR", "AS", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "GU", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME", "MI", "MN", "MO", "MP", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "PR", "RI", "SC", "SD", "TN", "TX", "UM", "UT", "VA", "VI", "VT", "WA", "WI", "WV", "WY"}
-
-	form.CheckField(validator.NotBlank(form.Company), "company", "This field cannot be blank")
-	form.CheckField(validator.MaxChars(form.Company, 100), "company", "This field cannot be longer than 100 characters")
-	form.CheckField(validator.NotBlank(form.Role), "role", "This field cannot be blank")
-	form.CheckField(validator.MaxChars(form.Role, 100), "role", "This field cannot be longer than 100 characters")
-	form.CheckField(validator.PermittedValue(form.Commute, permittedCommutes...), "commute", "This field must be one of the values given here")
-	form.CheckField(validator.PermittedValue(form.ApplicationStatus, permittedStatuses...), "status", "This field must be one of the values given here")
-	form.CheckField(validator.PermittedValue(form.Location, permittedLocations...), "location", "This field must be one of the values given here")
-	form.CheckField(validator.MaxChars(form.Notes, 280), "notes", "This field cannot be longer than 280 characters")
 
 	if !form.Valid() {
 		data := app.newTemplateData(r)
@@ -265,9 +237,123 @@ func (app *application) addJobPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	url := fmt.Sprintf("/application/view/%d", jid)
-
 	app.sessionManager.Put(r.Context(), "flash", "Application added successfully!")
 
-	http.Redirect(w, r, url, http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/application/view/%d", jid), http.StatusSeeOther)
+}
+
+func (app *application) updateJob(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	job, err := app.jobs.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	form := &jobForm{
+		Company:           job.Company,
+		Role:              job.Role,
+		Commute:           job.Commute,
+		ApplicationStatus: job.ApplicationStatus,
+		Location:          job.Location,
+		Notes:             job.Notes,
+		DateApplied:       job.DateApplied,
+	}
+
+	data := app.newTemplateData(r)
+	data.Form = form
+	data.Job = job
+
+	app.render(w, http.StatusOK, "update.gohtml", data)
+}
+
+func (app *application) updateJobPost(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	form, err := app.parseJobForm(r)
+	if err != nil {
+		app.clientError(w, http.StatusUnprocessableEntity)
+		return
+	}
+
+	if !form.Valid() {
+		job := &models.Job{ID: id}
+
+		data := app.newTemplateData(r)
+		data.Form = form
+		data.Job = job
+		app.render(w, http.StatusUnprocessableEntity, "update.gohtml", data)
+		return
+	}
+
+	err = app.jobs.Update(id, form.Company, form.Role, form.Commute, form.ApplicationStatus, form.Location, form.Notes, form.DateApplied)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Application updated successfully!")
+
+	http.Redirect(w, r, fmt.Sprintf("/application/view/%d", id), http.StatusSeeOther)
+}
+
+func (app *application) deleteJob(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	job, err := app.jobs.Get(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
+		return
+	}
+
+	data := app.newTemplateData(r)
+	data.Job = job
+
+	app.render(w, http.StatusOK, "delete.gohtml", data)
+}
+
+func (app *application) deleteJobPost(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
+
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.notFound(w)
+		return
+	}
+
+	err = app.jobs.Delete(id)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
+	app.sessionManager.Put(r.Context(), "flash", "Application deleted successfully!")
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }

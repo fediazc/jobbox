@@ -1,0 +1,9 @@
+{{define "title"}}Delete an Application{{end}}
+
+{{define "main"}}
+<h2>Deleting application for {{.Job.Role}} at {{.Job.Company}}</h2>
+<form action="/application/delete/{{.Job.ID}}" method="POST">
+    <label>Are you sure you want to delete this application?</label>
+    <input type="Submit" value="Confirm Deletion">
+</form>
+{{end}}
