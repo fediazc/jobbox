@@ -7,6 +7,17 @@
         <div class="button">
             <a href="/dashboard/all" class="button">View All Applications</a>
         </div>
+        <h2>Insights</h2>
+        <div class="insights">
+            <div>
+                <div class="stat">Applications</div>
+                <div class="stat-value">{{.Stats.NumJobs}}</div>
+            </div>
+            <div>
+               <div class="stat">...Last 14 Days</div>
+               <div class="stat-value">{{.Stats.NumRecentJobs}}</div>
+            </div>
+        </div>
     {{else}}
         <p>You have no job applications to view. <a href="/application/add">Add one!</a></p>
     {{end}}

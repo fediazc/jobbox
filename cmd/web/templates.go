@@ -14,6 +14,7 @@ type templateData struct {
 	IsAuthenticated bool
 	Flash           string
 	Form            any
+	Stats           *jobStats
 	Job             *models.Job
 	Jobs            []*models.Job
 	Locations       []string

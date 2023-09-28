@@ -37,6 +37,11 @@ type jobForm struct {
 	validator.Validator
 }
 
+type jobStats struct {
+	NumJobs       int
+	NumRecentJobs int
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 
@@ -171,14 +176,28 @@ func (app *application) logout(w http.ResponseWriter, r *http.Request) {
 func (app *application) dashboard(w http.ResponseWriter, r *http.Request) {
 	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
 
-	jobs, err := app.jobs.GetLatest(id)
+	jobs, err := app.jobs.GetAll(id)
 	if err != nil {
 		app.serverError(w, err)
 		return
 	}
 
+	var recentJobCount int
+	for _, j := range jobs {
+		date := j.DateApplied
+		if date.Before(time.Now()) && date.After(date.AddDate(0, 0, -14)) {
+			recentJobCount++
+		}
+	}
+
+	jobStats := &jobStats{
+		NumJobs:       len(jobs),
+		NumRecentJobs: recentJobCount,
+	}
+
 	data := app.newTemplateData(r)
-	data.Jobs = jobs
+	data.Jobs = jobs[0:min(jobStats.NumJobs, 15)]
+	data.Stats = jobStats
 
 	app.render(w, http.StatusOK, "dashboard.gohtml", data)
 }
