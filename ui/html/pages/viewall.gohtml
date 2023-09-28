@@ -1,12 +1,9 @@
-{{define "title"}}Dashboard{{end}}
+{{define "title"}}View All Applications{{end}}
 
 {{define "main"}}
-    <h2>Recent Applications</h2>
+    <h2>All Applications</h2>
     {{if .Jobs}}
         {{template "jobtable" .}}
-        <div class="button">
-            <a href="/dashboard/all" class="button">View All Applications</a>
-        </div>
     {{else}}
         <p>You have no job applications to view. <a href="/application/add">Add one!</a></p>
     {{end}}

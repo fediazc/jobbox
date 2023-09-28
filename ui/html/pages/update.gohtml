@@ -1,6 +1,7 @@
 {{define "title"}}Updating an Application{{end}}
 
 {{define "main"}}
+<h2>Update Application</h2>
 <form action="/application/update/{{.Job.ID}}" method="POST" novalidate>
     {{template "jobform" .}}
 </form>

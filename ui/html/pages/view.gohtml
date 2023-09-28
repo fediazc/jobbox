@@ -2,19 +2,45 @@
 
 {{define "main"}}
     {{with .Job}}
+        <h2>Application Details</h2>
         <div class="job">
             <div class="job-header"> 
-                <h2 class="job-title">{{.Role}} at {{.Company}}</h2>
+                <div>
+                    <h2 class="job-title">{{.Role}} at {{.Company}}</h2>
+                    <a href="/application/update/{{.ID}}" class="button update">
+                        <img src="/static/images/edit.svg" class="icon">
+                    </a>
+                    <a href="/application/delete/{{.ID}}" class="button delete">
+                        <img src="/static/images/delete.svg" class="icon">
+                    </a>
+                </div>
                 <div class="job-applied-date">
                     Applied on <time>{{humanShortDate .DateApplied}}</time>
                 </div>
             </div>
-            <div class="job-details">
-                <div class="job-info">{{.Commute}}</div>
-                <div class="job-info">{{.ApplicationStatus}}</div>
-                <div class="job-info">{{.Location}}</div>
+            <table class="job-details">
+                <thead>
+                    <th>Commute</th>
+                    <th>Status</th>
+                    <th>Location</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{.Commute}}</td>
+                        <td>{{.ApplicationStatus}}</td>
+                        <td>{{.Location}}</td>
+                    <tr>
+                </tbody>
+            </table>
+                <!-- <div class="job-detail-grid">
+                    <div class="job-info">{{.Commute}}</div>
+                    <div class="job-info">{{.ApplicationStatus}}</div>
+                    <div class="job-info">Located in {{.Location}}</div>
+                </div> -->
+            <div class="job-notes">
+                <p><strong>Notes:</strong></p>
+                <p>{{.Notes}}</p>
             </div>
-            <div class="job-notes">{{.Notes}}</div>
         </div>
     {{end}}
 {{end}}

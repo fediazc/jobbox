@@ -19,6 +19,7 @@ type templateData struct {
 	Locations       []string
 	Statuses        []string
 	CommuteTypes    []string
+	FormSubmitValue string
 }
 
 func todaysDate() string {

@@ -1,5 +1,7 @@
 .notes
 
+.DS_STORE
+
 # Go
 *.exe
 *.exe~

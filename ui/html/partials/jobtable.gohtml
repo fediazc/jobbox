@@ -1,0 +1,22 @@
+{{define "jobtable"}}
+<table>
+    <thead>
+        <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Date Applied</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{range .Jobs}}
+        <tr>
+            <td><a href="/application/view/{{.ID}}">{{.Company}}</a></td>
+            <td><a href="/application/view/{{.ID}}">{{.Role}}</a></td>
+            <td><a href="/application/view/{{.ID}}">{{.ApplicationStatus}}</a></td>
+            <td><a href="/application/view/{{.ID}}">{{humanDate .DateApplied}}</a></td>
+        </tr>
+    {{end}}
+    </tbody>
+    </table>
+{{end}}

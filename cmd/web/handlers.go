@@ -57,7 +57,7 @@ func (app *application) signupPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	form := signupForm{
+	form := &signupForm{
 		Name:     r.PostForm.Get("name"),
 		Email:    r.PostForm.Get("email"),
 		Password: r.PostForm.Get("password"),
@@ -211,6 +211,7 @@ func (app *application) viewJob(w http.ResponseWriter, r *http.Request) {
 func (app *application) addJob(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = jobForm{}
+	data.FormSubmitValue = "Submit"
 
 	app.render(w, http.StatusOK, "add.gohtml", data)
 }
@@ -225,6 +226,7 @@ func (app *application) addJobPost(w http.ResponseWriter, r *http.Request) {
 	if !form.Valid() {
 		data := app.newTemplateData(r)
 		data.Form = form
+		data.FormSubmitValue = "Submit"
 		app.render(w, http.StatusUnprocessableEntity, "add.gohtml", data)
 		return
 	}
@@ -274,6 +276,7 @@ func (app *application) updateJob(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
 	data.Form = form
 	data.Job = job
+	data.FormSubmitValue = "Update"
 
 	app.render(w, http.StatusOK, "update.gohtml", data)
 }
@@ -299,6 +302,7 @@ func (app *application) updateJobPost(w http.ResponseWriter, r *http.Request) {
 		data := app.newTemplateData(r)
 		data.Form = form
 		data.Job = job
+		data.FormSubmitValue = "Update"
 		app.render(w, http.StatusUnprocessableEntity, "update.gohtml", data)
 		return
 	}
@@ -356,4 +360,19 @@ func (app *application) deleteJobPost(w http.ResponseWriter, r *http.Request) {
 	app.sessionManager.Put(r.Context(), "flash", "Application deleted successfully!")
 
 	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+}
+
+func (app *application) viewAllJobs(w http.ResponseWriter, r *http.Request) {
+	id := app.sessionManager.GetInt(r.Context(), "authenticatedUserID")
+
+	jobs, err := app.jobs.GetAll(id)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	data := app.newTemplateData(r)
+	data.Jobs = jobs
+
+	app.render(w, http.StatusOK, "viewall.gohtml", data)
 }

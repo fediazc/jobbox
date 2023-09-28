@@ -1,20 +1,49 @@
 {{define "nav"}}
 <nav>
-    <div>
-        <a href="/">Home</a>
+    <div class="nav-left">
         {{if .IsAuthenticated}}
-        <a href="/dashboard">Dashboard</a>
-        <a href="/application/add">Add Application</a>
+        <div class="nav-link">
+            <a href="/dashboard">
+                <img src="/static/images/dashboard.svg" class="icon">
+                Dashboard
+            </a>
+        </div>
+        <div class="nav-link">
+            <a href="/application/add">
+                <img src="/static/images/add.svg" class="icon">
+                Add Application
+            </a>
+        </div>
+        {{else}}
+        <div>
+            <a href="/">
+                <img src="/static/images/home.svg" class="icon">
+                Home
+            </a>
+        </div>
         {{end}}
     </div>
-    <div>
+    <div class="nav-right">
         {{if .IsAuthenticated}}
             <form action="/user/logout" method="POST">
-                <button>Logout</button>
+                <button>
+                    <img src="/static/images/logout.svg" class="icon">
+                    Logout
+                </button>
             </form>
         {{else}}
-            <a href="/user/signup">Signup</a>
-            <a href="/user/login">Login</a>
+            <div>
+                <a href="/user/signup">
+                    <img src="/static/images/signup.svg" class="icon">
+                    Signup
+                </a>
+            </div>
+            <div>
+                <a href="/user/login">
+                    <img src="/static/images/login.svg" class="icon">
+                    Login
+                </a>
+            </div>
         {{end}}
     </div>
 </nav>

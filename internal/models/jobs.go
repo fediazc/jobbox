@@ -115,7 +115,31 @@ func (m *JobModel) GetLatest(userID int) ([]*Job, error) {
 }
 
 func (m *JobModel) GetAll(userID int) ([]*Job, error) {
-	return nil, nil
+	stmt := `SELECT id, company, job_role, commute, application_status, location, date_applied, notes 
+	FROM jobs WHERE user_id = ? ORDER BY id DESC`
+
+	rows, err := m.DB.Query(stmt, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	jobs := []*Job{}
+
+	for rows.Next() {
+		j := &Job{}
+
+		err = rows.Scan(&j.ID, &j.Company, &j.Role, &j.Commute, &j.ApplicationStatus, &j.Location, &j.DateApplied, &j.Notes)
+		if err != nil {
+			return nil, err
+		}
+		jobs = append(jobs, j)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return jobs, nil
 }
 
 func (m *JobModel) UserMatchesJob(userID int, jobID int) (bool, error) {

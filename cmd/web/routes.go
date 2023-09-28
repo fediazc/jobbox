@@ -33,6 +33,7 @@ func (app *application) routes() http.Handler {
 	router.Handler(http.MethodGet, "/dashboard", protected.ThenFunc(app.dashboard))
 	router.Handler(http.MethodGet, "/application/add", protected.ThenFunc(app.addJob))
 	router.Handler(http.MethodPost, "/application/add", protected.ThenFunc(app.addJobPost))
+	router.Handler(http.MethodGet, "/dashboard/all", protected.ThenFunc(app.viewAllJobs))
 
 	validated := protected.Append(app.validateAccess)
 
