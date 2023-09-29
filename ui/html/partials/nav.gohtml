@@ -3,21 +3,21 @@
     <div class="nav-left">
         {{if .IsAuthenticated}}
         <div class="nav-link">
+            <img src="/static/images/dashboard.svg" class="icon">
             <a href="/dashboard">
-                <img src="/static/images/dashboard.svg" class="icon">
                 Dashboard
             </a>
         </div>
         <div class="nav-link">
+            <img src="/static/images/add.svg" class="icon">
             <a href="/application/add">
-                <img src="/static/images/add.svg" class="icon">
                 Add Application
             </a>
         </div>
         {{else}}
         <div>
-            <a href="/">
-                <img src="/static/images/home.svg" class="icon">
+            <img src="/static/images/home.svg" class="icon">
+            <a href="/"> 
                 Home
             </a>
         </div>
@@ -26,21 +26,21 @@
     <div class="nav-right">
         {{if .IsAuthenticated}}
             <form action="/user/logout" method="POST">
+                <img src="/static/images/logout.svg" class="icon">
                 <button>
-                    <img src="/static/images/logout.svg" class="icon">
                     Logout
                 </button>
             </form>
         {{else}}
             <div>
+                <img src="/static/images/signup.svg" class="icon">
                 <a href="/user/signup">
-                    <img src="/static/images/signup.svg" class="icon">
                     Signup
                 </a>
             </div>
             <div>
+                <img src="/static/images/login.svg" class="icon">
                 <a href="/user/login">
-                    <img src="/static/images/login.svg" class="icon">
                     Login
                 </a>
             </div>
