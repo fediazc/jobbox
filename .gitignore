@@ -1,6 +1,7 @@
 .notes
-
 .DS_STORE
+
+tls/
 
 # Go
 *.exe
