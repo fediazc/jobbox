@@ -2,6 +2,7 @@
 
 {{define "main"}}
 <form action="/application/add" method="POST" novalidate>
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     {{template "jobform" .}}
 </form>
 {{end}}

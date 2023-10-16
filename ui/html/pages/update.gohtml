@@ -3,6 +3,7 @@
 {{define "main"}}
 <h2>Update Application</h2>
 <form action="/application/update/{{.Job.ID}}" method="POST" novalidate>
+    <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
     {{template "jobform" .}}
 </form>
 {{end}}

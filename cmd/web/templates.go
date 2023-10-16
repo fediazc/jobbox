@@ -21,6 +21,7 @@ type templateData struct {
 	Statuses        []string
 	CommuteTypes    []string
 	FormSubmitValue string
+	CSRFToken       string
 }
 
 func todaysDate() string {

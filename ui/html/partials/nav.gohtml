@@ -26,6 +26,7 @@
     <div class="nav-right">
         {{if .IsAuthenticated}}
             <form action="/user/logout" method="POST">
+                <input type='hidden' name='csrf_token' value='{{.CSRFToken}}'>
                 <img src="/static/images/logout.svg" class="icon">
                 <button>
                     Logout

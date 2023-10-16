@@ -13,3 +13,5 @@ require github.com/justinas/alice v1.2.0
 require github.com/alexedwards/scs/mysqlstore v0.0.0-20230902070821-95fa2ac9d520
 
 require golang.org/x/crypto v0.13.0
+
+require github.com/justinas/nosurf v1.1.1

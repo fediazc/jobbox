@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"cazar.fediaz.net/internal/validator"
+	"github.com/justinas/nosurf"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -33,6 +34,7 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 		Locations:       getValidLocations(),
 		Statuses:        getValidStatuses(),
 		CommuteTypes:    getValidCommuteTypes(),
+		CSRFToken:       nosurf.Token(r),
 	}
 }
 
