@@ -42,7 +42,7 @@ footer {
     border-top: 1px solid #c8c8c8;
 }
 
-h1 a {
+h1 a, .intro h1{
     font-size: 36px;
 }
 
@@ -241,7 +241,7 @@ a.button.delete, a.button.update {
     margin: 10px 0;
 }
 
-.job-applied-date {
+.job-applied-date, .intro h1 {
     font-style: italic;
     text-decoration: underline;
     text-decoration-thickness: 3px;
@@ -331,4 +331,12 @@ a.button.delete, a.button.update {
 
 .flash::selection {
     background: black;
+}
+
+.intro {
+    text-align: center;
+}
+
+.intro h1 {
+    margin-bottom: 20px;
 }
