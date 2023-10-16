@@ -116,7 +116,7 @@ func (m *JobModel) GetLatest(userID int) ([]*Job, error) {
 
 func (m *JobModel) GetAll(userID int) ([]*Job, error) {
 	stmt := `SELECT id, company, job_role, commute, application_status, location, date_applied, notes 
-	FROM jobs WHERE user_id = ? ORDER BY id DESC`
+	FROM jobs WHERE user_id = ? ORDER BY date_applied DESC`
 
 	rows, err := m.DB.Query(stmt, userID)
 	if err != nil {

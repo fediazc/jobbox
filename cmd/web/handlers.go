@@ -185,7 +185,7 @@ func (app *application) dashboard(w http.ResponseWriter, r *http.Request) {
 	var recentJobCount int
 	for _, j := range jobs {
 		date := j.DateApplied
-		if date.Before(time.Now()) && date.After(date.AddDate(0, 0, -14)) {
+		if date.Before(time.Now()) && date.After(time.Now().AddDate(0, 0, -14)) {
 			recentJobCount++
 		}
 	}
@@ -229,7 +229,9 @@ func (app *application) viewJob(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) addJob(w http.ResponseWriter, r *http.Request) {
 	data := app.newTemplateData(r)
-	data.Form = jobForm{}
+	data.Form = jobForm{
+		DateApplied: time.Now(),
+	}
 	data.FormSubmitValue = "Submit"
 
 	app.render(w, http.StatusOK, "add.gohtml", data)

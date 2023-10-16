@@ -60,7 +60,7 @@
     {{with .Form.FieldErrors.dateApplied}}
         <label class="error">{{.}}</label>
     {{end}}
-    <input type="date" name="date-applied" value="{{todaysDate}}">
+    <input type="date" name="date-applied" value="{{htmlDate .Form.DateApplied}}">
 </div>
 <div>
     <label>Notes:</label>

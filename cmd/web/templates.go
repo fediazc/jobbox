@@ -28,6 +28,10 @@ func todaysDate() string {
 	return time.Now().Format("2006-01-02")
 }
 
+func htmlDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
+
 func humanDate(t time.Time) string {
 	if t.IsZero() {
 		return ""
@@ -46,6 +50,7 @@ var functions = template.FuncMap{
 	"todaysDate":     todaysDate,
 	"humanDate":      humanDate,
 	"humanShortDate": humanShortDate,
+	"htmlDate":       htmlDate,
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
