@@ -1,5 +1,3 @@
-# Jobbox
-
 Jobbox is an application tracker that helps you stay organized while job hunting. Made with Go to learn the basics of back-end web dev.
 
 # How to run
@@ -62,7 +60,7 @@ If you are on windows or you installed Go in some other directory, replace `/usr
 
 ## Running the project
 
-Make sure you are in the base directory for the proejct and run the following command:
+Make sure you are in the base directory for the project and run the following command:
 
 ```
 go run ./cmd/web
