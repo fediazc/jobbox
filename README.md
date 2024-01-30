@@ -1,6 +1,6 @@
 # Jobbox
 
-Jobbox is a job application tracker that makes it easy to stay organized while you're on the hunt. Ditch the messy spreadsheet! Make your application tracking easy, with Jobbox.
+Jobbox is an application tracker that helps you stay organized while job hunting. Made with Go to learn the basics of back-end web dev.
 
 # How to run
 
